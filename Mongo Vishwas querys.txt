@@ -1,0 +1,104 @@
+use testdb // switch to 'testdb'  if  exist;  or create database if not exists,
+
+db  // showin actual used database,
+ 
+show dbs // showing all databases,
+
+show collections // show tables,
+ 
+db.testcollection.insert({"Name":"Test"}) //create 'testcollection' table with 'Name' column , 'Test' value,
+ 
+db.createCollection("Test") // create Table 'Test',
+  
+db.collection.drop() // drop table 'collection',
+
+db.dropDatabase() // drop database
+
+db.employees.find({}).count(); // count records
+ 
+db.employees.insert(
+{
+"EmpNo":"1","FirstName":"Andrew","LastName":"Neil","Age":"30","Gender":"Male","Skill":"MongoDB","Phone":"408-1234567","Email":"Andrew.Neil@gmail.com","Salary":"80000"
+}
+) // created table 'employees' with columns & values above 
+
+db.employees.insert([{},{},{},{}]) // Insert an array of documents(rows to table),
+
+db.employees.find() // select * from employees
+
+db.employees.find().pretty() // select * from employees in formated view
+
+db.employees.find({
+"EmpNo" : "2"
+}) // select *  from employees where EmpNo = 2;
+
+db.employees.find({"Age" : {$lte:"30"}}) // select * from employees where age < 30; "lt,lte,gt,gte,ne" not equal,
+
+db.employees.find({
+"Skill" : "MongoDB", "Salary" : "80000" 
+}).pretty() // Select * from employees where Skill = 'MongoDB' AND Salary = 80000;
+
+db.employees.find({ 
+  $or: [{"Skill" : "MongoDB"}, {"Salary" : "100000"}] 
+  }).pretty() // Select * from employees where Skill = 'MongoDB' OR Salary = 100000;
+  
+  db.employees.find({ 
+  "Skill" : "MongoDB", $or: [{"Salary" : "80000"},{"Salary" : "85000"}]
+}).pretty() // Select * from employees where skill = 'MongoDB' AND (Select * employees where Salary = 80000 or Salary = 85000);
+
+db.employees.update(
+{"_id": ObjectId("5f197b00905d7dabffd708e9")},
+{$set: {"Salary": "90000"}}
+) // update employees where objectId = ? set salary = 90000;
+
+db.employees.update(
+	{"Skill": "MongoDB"},
+	{$set: {"Salary" : "150000"}},
+	{multi:true} // update employees where Skill = 'MongoDB' set Salary = 150000;
+)
+
+db.employees.remove(
+{"_id" : ObjectId("5f197b00905d7dabffd708e9")}
+) // Delete from employees where id = ? ;
+
+db.employees.remove(
+{"Skill" : "MongoDB"}
+)// DELETE from employees where Skill = 'MongoDB';
+
+db.employees.remove({salary: {$lte:50000}});
+
+db.employees.find({},
+	{"FirstName": 1,"LastName":1, "_id": 0}).pretty() 
+		 //Select (FirstName,Lastname) from employees ;
+	
+db.employees.find({},
+	{"EmpNo":1,"FirstName": 1,"LastName":1, "_id": 0}).pretty().limit(3)
+		 //Select (EmpNo,FirstName,Lastname) from employees limit 3;
+			
+db.employees.find({},
+	{"EmpNo":1,"FirstName": 1,"LastName":1, "_id": 0}).pretty().skip(3)	
+		//Select (EmpNo,FirstName,Lastname) from employees, skip first 3 rows;
+		
+db.employees.find({},
+	{"EmpNo":1,"FirstName": 1,"LastName":1, "_id": 0}).pretty().skip(3).limit(3)
+		 //Select (EmpNo,FirstName,Lastname) from employees, skip first 3 rows, limit 3;
+			 
+db.employees.find({},
+	{"EmpNo":1,"FirstName": 1,"LastName":1, "_id": 0}).pretty().sort({"FirstName": -1})	 
+		//Select (EmpNo,FirstName,Lastname) from employees group by 'FirstName'
+		
+db.employees.ensureIndex({"Email": 1}) // create index on 'Email' field;
+
+db.employees.getIndexes() // display indexes
+
+db.employees.dropIndexes({"Email": 1}) // drop index
+
+db.employees.aggregate([{$group: {_id: "$Gender" , Total: {$sum:1} }}])
+// Sum of the Male-s and females
+
+db.employees.aggregate([{ $group: { _id: "$Gender",MaxAge: {$max:"$Age"} }} ])
+// Max Age of Female and Male
+
+
+		
+			
